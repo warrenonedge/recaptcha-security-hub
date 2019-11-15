@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>No.mad Recaptcha Security Hub</title>
+    <script type="text/javascript" th:src="@{webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{webjars/font-awesome/css/all.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" th:href="@{/}">No.mad Recaptcha Security Hub</a>
+</nav>
+
+<main role="main" class="container">
+
+    <div class="starter-template">
+        <h4>Search Recaptcha Entries</h4>
+    </div>
+    <div class="col-sm-12">
+        <a class="btn btn-success float-right" th:href=@{/create} role="button"><span class="fas fa-plus"></span> Create</a>
+        <a class="btn btn-primary float-right btn-space-right" th:href=@{/all} role="button"><span class="fas fa-list-ol"></span> View All</a>
+    </div>
+    <div class="col-sm-12 float-left">
+        <form action="#" th:action="@{/search}" method="POST">
+            <div class="form-group col-sm-6">
+                <label for="application">Application Name:</label>
+                <input class="form-control" id="application" name="application" aria-describedby="applicationHelp" placeholder="Enter Application Name"/>
+                <small id="applicationHelp" class="form-text text-muted">Enter the name of the Application associated with your Recaptcha Keys</small>
+            </div>
+            <p><input type="submit" value="Submit" class="btn btn-primary"/> <input type="reset" value="Reset" class="btn btn-danger"/></p>
+        </form>
+    </div>
+    <div th:if="!${recaptcha} and ${isSearched}">
+        <div class="starter-template">
+            <h4>Modify Recaptcha</h4>
+        </div>
+        <div class="col-sm-6">
+            <p>No Recaptcha found for Application Name Provided.</p>
+        </div>
+    </div>
+    <div th:if="${recaptcha}">
+        <div class="starter-template">
+            <h4>Modify Recaptcha</h4>
+        </div>
+        <div class="col-sm-6">
+            <form action="#" th:action="@{/modify}" th:object="${recaptcha}" method="POST">
+                <input type="hidden" th:field="*{id}"/>
+                <label for="application">Application Name:</label>
+                <input class="form-control" th:field="*{application}" placeholder="Enter Application Name"/>
+                <label for="siteKey">Site Key:</label>
+                <input class="form-control" th:field="*{siteKey}" placeholder="Enter Site Key"/>
+                <label for="secretKey">Secret Key:</label>
+                <input class="form-control" th:field="*{secretKey}" placeholder="Enter Secret Key"/>
+                </br>
+                <p><input type="submit" value="Submit" class="btn btn-primary"/> <input type="reset" value="Reset" class="btn btn-danger"/></p>
+            </form>
+        </div>
+    </div>  
+    
+</main>
+<!-- /.container -->
+</body>
+</html>
