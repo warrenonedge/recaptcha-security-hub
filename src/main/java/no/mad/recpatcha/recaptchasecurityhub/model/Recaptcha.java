@@ -26,4 +26,7 @@ public class Recaptcha {
 
     @NotBlank(message = "Secret Key must not be blank")
     private String secretKey;
+
+    @NotBlank(message = "Threshold must not be blank")
+    private Double threshold;
 }

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import no.mad.recpatcha.recaptchasecurityhub.dao.RecaptchaRepository;
+import no.mad.recpatcha.recaptchasecurityhub.model.Recaptcha;
 import no.mad.recpatcha.recaptchasecurityhub.model.rest.RecaptchaRequest;
 import no.mad.recpatcha.recaptchasecurityhub.model.rest.RecaptchaResponse;
 import no.mad.recpatcha.recaptchasecurityhub.model.rest.SiteKeyResponse;
+import no.mad.recpatcha.recaptchasecurityhub.model.rest.VerifyTokenResponse;
 
 @RestController
 @RequestMapping("/rest")
@@ -41,13 +43,27 @@ public class RecaptchaRestController {
     }
 
     @GetMapping("/token/verify")
-    public RecaptchaResponse verifyToken(@ModelAttribute @Valid RecaptchaRequest recaptchaRequest) {
-        String secretKey = recaptchaRepository.findSecretKeyByApplication(recaptchaRequest.getApplication());
+    public VerifyTokenResponse verifyToken(@ModelAttribute @Valid RecaptchaRequest recaptchaRequest) {
+        Recaptcha recaptcha = recaptchaRepository.findByApplication(recaptchaRequest.getApplication());
+
+        String secretKey = recaptcha.getSecretKey();
+        Double threshold = recaptcha.getThreshold();
 
         URI verifyUri = URI.create(String.format(RECAPTCHA_URL + "?secret=%s&response=%s",
           secretKey, recaptchaRequest.getToken()) + (!StringUtils.isEmpty(recaptchaRequest.getClientIP()) 
             ? String.format("&remoteip=%s", recaptchaRequest.getClientIP()) : ""));
  
-        return restTemplate.getForObject(verifyUri, RecaptchaResponse.class);
+
+        RecaptchaResponse recaptchaResponse = restTemplate.getForObject(verifyUri, RecaptchaResponse.class);
+
+        Boolean isVerified = Boolean.FALSE;
+        if (recaptchaResponse != null) {
+            if (recaptchaResponse.isSuccess() || (recaptchaResponse.getScore() >= threshold)) {
+                isVerified = Boolean.TRUE;
+            }
+        }
+
+        return new VerifyTokenResponse(recaptchaRequest.getApplication(), recaptchaRequest.getToken(), 
+            isVerified, recaptchaResponse.getErrorCodes());
     }
 }
