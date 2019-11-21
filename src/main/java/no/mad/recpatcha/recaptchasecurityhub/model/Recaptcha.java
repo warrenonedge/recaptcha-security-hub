@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class Recaptcha {
     @NotBlank(message = "Secret Key must not be blank")
     private String secretKey;
 
-    @NotBlank(message = "Threshold must not be blank")
+    @NotNull(message = "Threshold must not be blank")
     @DecimalMin(value = "0.0", message = "Threshold must be a Decimal value between 0.0 - 1.0")
     @DecimalMax(value = "1.0", message = "Threshold must be a Decimal value between 0.0 - 1.0")
     private Double threshold;
