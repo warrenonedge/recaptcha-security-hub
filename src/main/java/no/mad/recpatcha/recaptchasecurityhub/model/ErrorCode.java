@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum ErrorCode {
     MissingSecret,     InvalidSecret,
-    MissingResponse,   InvalidResponse, InvalidKeys;
+    MissingResponse,   InvalidResponse, 
+    InvalidKeys,       TimeoutOrDuplicate;
 
     private static Map<String, ErrorCode> errorsMap = new HashMap<String, ErrorCode>(4);
 
@@ -16,7 +17,8 @@ public enum ErrorCode {
         errorsMap.put("invalid-input-secret",   InvalidSecret);
         errorsMap.put("missing-input-response", MissingResponse);
         errorsMap.put("invalid-input-response", InvalidResponse);
-        errorsMap.put("invalid-keys", InvalidKeys);
+        errorsMap.put("invalid-keys",           InvalidKeys);
+        errorsMap.put("timeout-or-duplicate",   TimeoutOrDuplicate);
     }
 
     @JsonCreator
