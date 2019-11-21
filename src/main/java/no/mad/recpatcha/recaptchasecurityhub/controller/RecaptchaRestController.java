@@ -43,7 +43,7 @@ public class RecaptchaRestController {
     }
 
     @GetMapping("/token/verify")
-    public VerifyTokenResponse verifyToken(@ModelAttribute @Valid RecaptchaRequest recaptchaRequest) {
+    public VerifyTokenResponse verifyToken(@ModelAttribute @Valid RecaptchaRequest recaptchaRequest) throws Exception {
         Recaptcha recaptcha = recaptchaRepository.findByApplication(recaptchaRequest.getApplication());
 
         String secretKey = recaptcha.getSecretKey();
@@ -56,12 +56,11 @@ public class RecaptchaRestController {
 
         RecaptchaResponse recaptchaResponse = restTemplate.getForObject(verifyUri, RecaptchaResponse.class);
 
-        Boolean isVerified = Boolean.FALSE;
-        if (recaptchaResponse != null) {
-            if (recaptchaResponse.isSuccess() || (recaptchaResponse.getScore() >= threshold)) {
-                isVerified = Boolean.TRUE;
-            }
+        if (recaptchaResponse == null) {
+            throw new Exception("Google Recaptcha is Unavailable");
         }
+
+        Boolean isVerified = (!recaptchaResponse.isSuccess() || (recaptchaResponse.getScore() < threshold)) ? Boolean.FALSE : Boolean.TRUE;
 
         return new VerifyTokenResponse(recaptchaRequest.getApplication(), recaptchaRequest.getToken(), 
             isVerified, recaptchaResponse.getErrorCodes());
