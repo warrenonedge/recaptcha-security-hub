@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import no.mad.recpatcha.recaptchasecurityhub.model.ErrorCode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,7 +21,7 @@ import no.mad.recpatcha.recaptchasecurityhub.model.ErrorCode;
         "hostname",
         "error-codes"
     })
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor @ToString
 public class RecaptchaResponse {
      
     @JsonProperty("success")
