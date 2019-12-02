@@ -8,7 +8,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum ErrorCode {
     MissingSecret,     InvalidSecret,
     MissingResponse,   InvalidResponse, 
-    InvalidKeys,       TimeoutOrDuplicate;
+    InvalidKeys,       TimeoutOrDuplicate,
+    ThresholdFailed;
 
     private static Map<String, ErrorCode> errorsMap = new HashMap<String, ErrorCode>(4);
 
@@ -19,6 +20,7 @@ public enum ErrorCode {
         errorsMap.put("invalid-input-response", InvalidResponse);
         errorsMap.put("invalid-keys",           InvalidKeys);
         errorsMap.put("timeout-or-duplicate",   TimeoutOrDuplicate);
+        errorsMap.put("ThresholdFailed",        ThresholdFailed);
     }
 
     @JsonCreator

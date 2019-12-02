@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import no.mad.recpatcha.recaptchasecurityhub.dao.RecaptchaRepository;
+import no.mad.recpatcha.recaptchasecurityhub.model.ErrorCode;
 import no.mad.recpatcha.recaptchasecurityhub.model.Recaptcha;
 import no.mad.recpatcha.recaptchasecurityhub.model.rest.RecaptchaRequest;
 import no.mad.recpatcha.recaptchasecurityhub.model.rest.RecaptchaResponse;
@@ -65,7 +66,12 @@ public class RecaptchaRestController {
         }
         logger.info("Recaptcha Response: " + recaptchaResponse.toString());
 
-        Boolean isVerified = (!recaptchaResponse.isSuccess() || (recaptchaResponse.getScore() < threshold)) ? Boolean.FALSE : Boolean.TRUE;
+        Boolean isHuman = (recaptchaResponse.getScore() != null && recaptchaResponse.getScore() >= threshold);
+        Boolean isVerified = (!recaptchaResponse.isSuccess() || !isHuman) ? Boolean.FALSE : Boolean.TRUE;
+
+        if (recaptchaResponse.getErrorCodes() == null) {
+            recaptchaResponse.setErrorCodes(new ErrorCode[]{ErrorCode.ThresholdFailed});
+        }
 
         return new VerifyTokenResponse(recaptchaRequest.getApplication(), recaptchaRequest.getToken(), 
             isVerified, recaptchaResponse.getErrorCodes());
