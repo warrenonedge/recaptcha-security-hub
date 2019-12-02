@@ -69,7 +69,7 @@ public class RecaptchaRestController {
         Boolean isHuman = (recaptchaResponse.getScore() != null && recaptchaResponse.getScore() >= threshold);
         Boolean isVerified = (!recaptchaResponse.isSuccess() || !isHuman) ? Boolean.FALSE : Boolean.TRUE;
 
-        if (recaptchaResponse.getErrorCodes() == null) {
+        if (recaptchaResponse.getErrorCodes() == null && !isHuman) {
             recaptchaResponse.setErrorCodes(new ErrorCode[]{ErrorCode.ThresholdFailed});
         }
 
